@@ -3,6 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
+import Conexion.conexion;
+import java.sql.*;
+import java.sql.ResultSetMetaData;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,6 +20,7 @@ public class Regis_Matricula extends javax.swing.JFrame {
      */
     public Regis_Matricula() {
         initComponents();
+        cargartabla();
     }
 
     /**
@@ -27,7 +33,7 @@ public class Regis_Matricula extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablamatricula = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -38,7 +44,7 @@ public class Regis_Matricula extends javax.swing.JFrame {
         btnModificar2 = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablamatricula.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -49,7 +55,7 @@ public class Regis_Matricula extends javax.swing.JFrame {
                 "NumMatrícula", "CodAlumno", "CodCurso", "Fecha", "Hora"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablamatricula);
 
         jLabel1.setText("TABLA DE MATRÍCULA");
 
@@ -139,6 +145,39 @@ public class Regis_Matricula extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnModificar2ActionPerformed
 
+    
+    
+    private void cargartabla(){
+        DefaultTableModel modeloTabla=(DefaultTableModel) tablamatricula.getModel();
+        modeloTabla.setRowCount(0);
+        
+        PreparedStatement ps;
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        int columnas;
+        
+        try{
+            
+            conexion co=new conexion();
+            Connection con=co.getConnection();
+            ps = con.prepareStatement("SELECT numMatricula,codAlumno,codCurso,fecha , hora FROM matricula");
+            rs=ps.executeQuery();
+            rsmd= rs.getMetaData();
+            columnas=rsmd.getColumnCount();
+            
+            while(rs.next()){
+                Object[] fila = new Object [columnas];
+                for(int indice=0 ; indice<columnas; indice++){
+                    fila[indice] = rs.getObject(indice +1);
+                }
+                modeloTabla.addRow(fila);
+        }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        
+        }
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -179,14 +218,12 @@ public class Regis_Matricula extends javax.swing.JFrame {
     private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnConsultar;
     private javax.swing.JButton btnEliminar;
-    private javax.swing.JButton btnModificar;
-    private javax.swing.JButton btnModificar1;
     private javax.swing.JButton btnModificar2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablamatricula;
     private javax.swing.JTextField txtCodigoAlumno;
     private javax.swing.JTextField txtCodigoCurso;
     // End of variables declaration//GEN-END:variables

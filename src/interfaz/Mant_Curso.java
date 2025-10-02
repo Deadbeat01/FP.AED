@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
-
+import Conexion.conexion;
+import java.sql.*;
+import java.sql.ResultSetMetaData;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author LAB-USR-LSUR
@@ -15,6 +19,7 @@ public class Mant_Curso extends javax.swing.JFrame {
      */
     public Mant_Curso() {
         initComponents();
+        cargartabla();
     }
 
     /**
@@ -28,7 +33,7 @@ public class Mant_Curso extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablacurso = new javax.swing.JTable();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -46,7 +51,7 @@ public class Mant_Curso extends javax.swing.JFrame {
 
         jLabel1.setText("TABLA DE CURSO");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablacurso.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null, null},
                 {null, null, null, null, null},
@@ -57,7 +62,7 @@ public class Mant_Curso extends javax.swing.JFrame {
                 "Código", "Asignatura", "Ciclo", "Créditos", "Horas"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablacurso);
 
         jLabel2.setText("Código");
 
@@ -100,6 +105,11 @@ public class Mant_Curso extends javax.swing.JFrame {
         });
 
         btnAdicionar.setText("ADICIONAR");
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         btnConsultar.setText("CONSULTAR");
 
@@ -219,6 +229,43 @@ public class Mant_Curso extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnModificarActionPerformed
 
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void cargartabla(){
+        DefaultTableModel modeloTabla=(DefaultTableModel) tablacurso.getModel();
+        modeloTabla.setRowCount(0);
+        
+        PreparedStatement ps;
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        int columnas;
+        
+        try{
+            
+            conexion co=new conexion();
+            Connection con=co.getConnection();
+            ps = con.prepareStatement("SELECT codCurso,asignatura,ciclo,creditos,horas FROM curso");
+            rs=ps.executeQuery();
+            rsmd= rs.getMetaData();
+            columnas=rsmd.getColumnCount();
+            
+            while(rs.next()){
+                Object[] fila = new Object [columnas];
+                for(int indice=0 ; indice<columnas; indice++){
+                    fila[indice] = rs.getObject(indice +1);
+                }
+                modeloTabla.addRow(fila);
+        }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        
+        }
+        
+    }
+    
     /**
      * @param args the command line arguments
      */
@@ -267,7 +314,7 @@ public class Mant_Curso extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tablacurso;
     private javax.swing.JTextField txtAsignatura;
     private javax.swing.JTextField txtCiclo;
     private javax.swing.JTextField txtCodigoCurso;

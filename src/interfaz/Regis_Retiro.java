@@ -3,7 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
-
+import Conexion.conexion;
+import java.sql.*;
+import java.sql.ResultSetMetaData;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 /**
  *
  * @author LAB-USR-LSUR
@@ -15,6 +19,7 @@ public class Regis_Retiro extends javax.swing.JFrame {
      */
     public Regis_Retiro() {
         initComponents();
+        cargartabla();
     }
 
     /**
@@ -27,7 +32,7 @@ public class Regis_Retiro extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tablaretiro = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
@@ -36,7 +41,7 @@ public class Regis_Retiro extends javax.swing.JFrame {
         btnModificar2 = new javax.swing.JButton();
         btnEliminar = new javax.swing.JButton();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tablaretiro.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -44,10 +49,10 @@ public class Regis_Retiro extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "numRetiro", "numMatricula", "fecha", "hora"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tablaretiro);
 
         jLabel1.setText("TABLA DE RETIRO");
 
@@ -125,7 +130,37 @@ public class Regis_Retiro extends javax.swing.JFrame {
     private void btnModificar2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificar2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnModificar2ActionPerformed
-
+ private void cargartabla(){
+        DefaultTableModel modeloTabla=(DefaultTableModel) tablaretiro.getModel();
+        modeloTabla.setRowCount(0);
+        
+        PreparedStatement ps;
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        int columnas;
+        
+        try{
+            
+            conexion co=new conexion();
+            Connection con=co.getConnection();
+            ps = con.prepareStatement("SELECT numRetiro,numMatricula,fecha , hora FROM retiro");
+            rs=ps.executeQuery();
+            rsmd= rs.getMetaData();
+            columnas=rsmd.getColumnCount();
+            
+            while(rs.next()){
+                Object[] fila = new Object [columnas];
+                for(int indice=0 ; indice<columnas; indice++){
+                    fila[indice] = rs.getObject(indice +1);
+                }
+                modeloTabla.addRow(fila);
+        }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        
+        }
+        
+    }
     /**
      * @param args the command line arguments
      */
@@ -172,7 +207,7 @@ public class Regis_Retiro extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JTable tablaretiro;
     // End of variables declaration//GEN-END:variables
 }

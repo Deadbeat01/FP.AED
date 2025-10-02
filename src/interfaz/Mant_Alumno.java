@@ -3,6 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package interfaz;
+import Conexion.conexion;
+import java.sql.*;
+import java.sql.ResultSetMetaData;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -15,6 +20,7 @@ public class Mant_Alumno extends javax.swing.JFrame {
      */
     public Mant_Alumno() {
         initComponents();
+        cargartabla();
     }
 
     /**
@@ -49,6 +55,11 @@ public class Mant_Alumno extends javax.swing.JFrame {
         jLabel8 = new javax.swing.JLabel();
 
         btnAdicionar.setText("ADICIONAR");
+        btnAdicionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAdicionarActionPerformed(evt);
+            }
+        });
 
         btnConsultar.setText("CONSULTAR");
 
@@ -75,6 +86,12 @@ public class Mant_Alumno extends javax.swing.JFrame {
         jScrollPane1.setViewportView(tablaMantenimiento);
 
         jLabel1.setText("TABLA DE ALUMNOS");
+
+        txtCodigoAlumno.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoAlumnoActionPerformed(evt);
+            }
+        });
 
         jLabel2.setText("Código");
 
@@ -188,6 +205,47 @@ public class Mant_Alumno extends javax.swing.JFrame {
     private void btnModificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModificarActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnModificarActionPerformed
+
+    private void btnAdicionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAdicionarActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_btnAdicionarActionPerformed
+
+    private void cargartabla(){
+        DefaultTableModel modeloTabla=(DefaultTableModel) tablaMantenimiento.getModel();
+        modeloTabla.setRowCount(0);
+        
+        PreparedStatement ps;
+        ResultSet rs;
+        ResultSetMetaData rsmd;
+        int columnas;
+        try{
+            conexion co=new conexion();
+            Connection con=co.getConnection();
+            ps = con.prepareStatement("SELECT codAlumno,nombres,apellidos,dni,edad,celular,estado FROM alumno");
+            rs=ps.executeQuery();
+            rsmd= rs.getMetaData();
+            columnas=rsmd.getColumnCount();
+            
+            while(rs.next()){
+                Object[] fila = new Object [columnas];
+                for(int indice=0 ; indice<columnas; indice++){
+                    fila[indice] = rs.getObject(indice +1);
+                }
+                modeloTabla.addRow(fila);
+            }
+        }catch(Exception e){
+            JOptionPane.showMessageDialog(null, e.toString());
+        }
+    }
+    
+    
+    
+    
+    
+    private void txtCodigoAlumnoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoAlumnoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoAlumnoActionPerformed
 
     /**
      * @param args the command line arguments
