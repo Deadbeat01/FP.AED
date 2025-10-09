@@ -1,11 +1,25 @@
 
 package interfaz;
-
+import javax.swing.UIManager;
 
 public class Menu extends javax.swing.JFrame {
-
+FondoPanel fondo = new FondoPanel();
     public Menu() {
         initComponents();
+        java.awt.Image icon = new javax.swing.ImageIcon(getClass().getResource("/Imagen/Icono.png")).getImage();
+        setIconImage(icon);
+        setContentPane(fondo);
+    }
+    class FondoPanel extends javax.swing.JPanel {
+        private java.awt.Image imagen;
+        public FondoPanel() {
+            imagen = new javax.swing.ImageIcon(getClass().getResource("/Imagen/LogoNEXO.png")).getImage();
+        }
+        @Override
+        protected void paintComponent(java.awt.Graphics g) {
+            super.paintComponent(g);
+            g.drawImage(imagen, 0, 0, getWidth(), getHeight(), this);
+        }
     }
 
 
